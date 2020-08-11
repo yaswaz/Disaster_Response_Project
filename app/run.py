@@ -20,7 +20,7 @@ from nltk.stem import WordNetLemmatizer
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar, Heatmap, Histogram
+from plotly.graph_objs import Bar, Heatmap, Histogram, Box, Scatter
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -75,23 +75,32 @@ df['text_length'] = compute_text_length(df['message'])
 @app.route('/index')
 def index():
     
-    # extract data needed for visuals
+    # Extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
-    # extract categories
+    # extract categories for Heatmap
     category_map = df.iloc[:,4:].corr().values
     category_names = list(df.iloc[:,4:].columns)
+    
+    
+
 
     # extract length of texts
     length_direct = df.loc[df.genre=='direct','text_length']
     length_social = df.loc[df.genre=='social','text_length']
     length_news = df.loc[df.genre=='news','text_length']
     
+     # Graph 4
+    category_name = df.iloc[:,4:].columns
+    category_count = (df.iloc[:,4:] != 0).sum().values
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
+        
+        #Graph 1
         {
             'data': [
                 Bar(
@@ -111,7 +120,7 @@ def index():
             }
         },
         
-        # Graph Two
+        # Graph 2
         {
             'data': [
                 Heatmap(
@@ -123,6 +132,62 @@ def index():
 
             'layout': {
                 'title': 'Heatmap of Categories'
+            }
+        },
+        
+        # Graph 3
+        {
+            'data': [
+                Box(
+                    y=length_direct,
+                    name='Direct',
+                    opacity=0.5,
+                    jitter=0.5
+                    #boxpoints='all'
+                ),
+                Box(
+                    y=length_social,
+                    name='Social',
+                    opacity=0.5
+                ),
+                Box(
+                    y=length_news,
+                    name='News',
+                    opacity=0.5
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Text Length',
+                'yaxis':{
+                    'title':'Count',
+                    'dtick':'1000',
+                    
+                },
+                'xaxis': {
+                    'title':'Text Length'
+                }
+            }
+        },
+        
+        # Graph 4
+        {
+            'data': [
+                Bar(
+                    x=category_name,
+                    y=category_count
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category",
+                    'tickangle': 35, 'categoryorder':'total descending'
+                }
             }
         }
 
