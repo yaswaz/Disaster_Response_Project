@@ -27,37 +27,12 @@ from sqlalchemy import create_engine
 
 app = Flask(__name__)
 
-def tokenize(text):
-    """
-    Remove special characters and capital letters and lemmatize texts
-    """
-    # Identify and replace url with placeholder
-    url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-    detected_urls = re.findall(url_regex, text)
-    for url in detected_urls:
-        text = text.replace(url, "urlplaceholder")
-        
-    # Remove punctuation characters
-    text = re.sub(r"[^a-zA-Z0-9_]", " ", text)
-    
-    # tokenize text
-    tokens = word_tokenize(text)
-    
-    # Remove stop words
-    tokens = [t for t in tokens if t not in stopwords.words("english")]
-    # initiate lemmatizer
-    lemmatizer = WordNetLemmatizer()
-    
-    # iterate through each token and lemmatize, normalize case, and remove leading/trailing white space
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
+#import functions from train_classifier module
+import sys
+sys.path.insert(0, '/home/workspace/models/')
+from train_classifier import tokenize, compute_text_length
 
-    return clean_tokens
 
-def compute_text_length(data):
-    return np.array([len(text) for text in data]).reshape(-1, 1)
 
 # load data
 engine = create_engine('sqlite:///../data/DisasterMessages.db')
