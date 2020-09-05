@@ -1,1 +1,1 @@
-web gunicorn disasterresponsepro:app
+web gunicorn disasterresponse:app
