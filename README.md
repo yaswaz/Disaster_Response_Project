@@ -6,8 +6,8 @@ Disaster Response Pipeline Project
 
 ### Description
 
-This Project is part of Data Science Nanodegree Program by Udacity in collaboration with Figure Eight. Figure Eight provides the data to build a model for an API that classifies disaster messages.
-When disaster strikes, it creates different and complex challenges for the organizations tasked with the responsibility of responding. They have to go through thousands of messages to understand what is needed in every situation. Filtering out these messages and deciding which are need their response is a daunting task especially in large disaster situations. In this project predictive modeling is used to make the classification of these messages easier and more efficient.
+This Project is part of the Data Science Nanodegree Program by Udacity in collaboration with Figure Eight. Figure Eight provides the data to build a model for an API that classifies disaster messages.
+When disaster strikes, it creates different and complex challenges for the organizations tasked with the responsibility of responding. They have to go through thousands of messages to understand what is needed in every situation. Filtering out these messages and deciding which need their response is a daunting task especially in massive disaster situations. In this project, predictive modeling is used to make the classification of these messages easier and more efficient.
 
 The project is divided into 3 sections:
 1. ETL Pipeline -  The first part of the data pipeline extracts, transforms, and loads the messages and categories data. The datasets are cleaned and then stored in a SQLite database. All the data cleaning is done with pandas. The ETL script is stored as process_data.py
@@ -58,4 +58,5 @@ The project is divided into 3 sections:
 - https://github.com/kzhao682/Disaster_Response
 - stackoverflow.com
 
-### Screenshots
+### Images
+See some images in the images folder or click here https://github.com/yaswaz/Disaster_Response_Project/tree/master/images
