@@ -10,13 +10,13 @@ def load_data(messages_filepath, categories_filepath):
     """
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
-    
+
     # load categories dataset
     categories = pd.read_csv(categories_filepath)
-    
+
     # Merge the two dataframes
     df = messages.merge(categories, how='inner', on='id')
-    
+
     return df
 
 def clean_data(df):
@@ -25,31 +25,34 @@ def clean_data(df):
     """
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';',expand=True)
-    
+
     # select the first row of the categories dataframe
     row = categories.iloc[0]
     category_colnames = row.map(lambda x: x.rstrip('-10'))
-    
+
     # rename the columns of `categories`
     categories.columns = category_colnames
-    
+
     # convert category values to 0 or 1
     for column in categories:
      # set each value to be the last character of the string
         categories[column] = categories[column].str.strip().str[-1]
-    
+
     # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
-    
+
+    # Remove values in related that are not 0 or 1
+    categories = categories[categories.related != 2]
+
     # drop the original categories column from `df`
     df.drop('categories', axis=1, inplace=True)
-    
+
     # replace categories column in df with new columns
     df = pd.concat([df, categories], axis=1)
-    
+
     # Remove duplicates
     df.drop_duplicates(inplace=True)
-    
+
     return df
 
 
@@ -57,10 +60,10 @@ def save_data(df, database_filename):
     """
      Save clean data into a dataframe in SQL database
     """
-    
+
     engine = create_engine('sqlite:///DisasterMessages.db')
     df.to_sql('disaster_msg_df', engine, index=False)
-    pass  
+    pass
 
 
 def main():
@@ -74,12 +77,12 @@ def main():
 
         print('Cleaning data...')
         df = clean_data(df)
-        
+
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
-        
+
         print('Cleaned data saved to database!')
-    
+
     else:
         print('Please provide the filepaths of the messages and categories '\
               'datasets as the first and second argument respectively, as '\
